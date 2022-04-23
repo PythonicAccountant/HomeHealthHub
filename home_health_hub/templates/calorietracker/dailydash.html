@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Daily Dash{% endblock %}
+
+{% block content %}
+  <div class="content">
+    <div class="container-fluid">
+      <div id="foodlog">
+        {% include 'calorietracker/fragments/foodlog.html' %}
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}

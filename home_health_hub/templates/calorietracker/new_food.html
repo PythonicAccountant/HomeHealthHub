@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}New Entry{% endblock %}
+
+{% block content %}
+  <div class="content">
+    <div class="container-fluid">
+
+{#     {% url 'filings:list' as list_url %}#}
+      <form action="{% url 'calorietracker:newentry' %}" method="post">
+    {% csrf_token %}
+{#    {% render_field filter.form.form_type class="form-control" hx-get=list_url hx-target="#page_obj_div" hx-trigger="change" %}#}
+
+    {{ form.as_table }}
+    <input type="submit" value="Submit">
+</form>
+
+    </div>
+  </div>
+
+{% endblock content %}
