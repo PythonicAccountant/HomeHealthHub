@@ -16,6 +16,10 @@ urlpatterns = [
     path("users/", include("home_health_hub.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
+    path(
+        "tracker/",
+        include("home_health_hub.calorietracker.urls", namespace="calorietracker"),
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

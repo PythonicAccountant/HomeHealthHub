@@ -148,7 +148,7 @@ def food_list_view(request):
 
 
 @login_required
-def delete_food_list_view(request, id):
+def food_delete_view(request, id):
     obj = get_object_or_404(Food, id=id)
     obj.delete()
 
@@ -216,5 +216,28 @@ def add_calorie_profile(request):
         return TemplateResponse(
             request,
             "calorietracker/fragments/calorie_profile_form_fragment.html",
+            {"form": form},
+        )
+
+
+@login_required
+def food_update_view(request, id):
+    food = get_object_or_404(Food, id=id)
+    if request.method == "POST":
+        form = FoodForm(request.POST, instance=food)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse("calorietracker:food_list"))
+    else:
+        form = FoodForm(instance=food)
+
+    if not request.META.get("HTTP_HX_REQUEST"):
+        return TemplateResponse(
+            request, "calorietracker/food_update.html", {"form": form}
+        )
+    else:
+        return TemplateResponse(
+            request,
+            "calorietracker/fragments/food_update_fragment.html",
             {"form": form},
         )

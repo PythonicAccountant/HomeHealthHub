@@ -13,10 +13,10 @@
     </div>
 
 <div class="text-right">
-  <button class="btn btn-primary" _="on click add .actionss to .actionc then hide me then show the next <button/>">
+  <button class="btn btn-primary" _="on click add .actionshow to .actionhide then hide me then show the next <button/>">
     Show Actions
-</button>
-  <button class="btn btn-secondary" _="on click remove .actionss from .actionc then hide me then show the previous <button/>" style="display: none">
+  </button>
+  <button class="btn btn-secondary" _="on click remove .actionshow from .actionhide then hide me then show the previous <button/>" style="display: none">
     Hide Actions
   </button>
   <a data-hx-get="{% url 'calorietracker:newentry' %}" data-hx-target="#foodlog" class="btn btn-success" type="button">
@@ -35,7 +35,7 @@
     <th>Food</th>
     <th>Amount</th>
     <th class="text-right">Cal</th>
-    <th class="actionc">Action</th>
+    <th class="actionhide">Action</th>
   </tr>
   </thead>
   <tbody>
@@ -49,7 +49,7 @@
       <td> {{ food.food.name }} </td>
       <td> {{ food.units_eaten }} {{ food.food.uom }}</td>
       <td class="text-right">{{ food.calories_consumed|floatformat:0 }}</td>
-      <td class="actionc">
+      <td class="actionhide">
         <div style="display: flex; justify-content: space-between">
         <button class="btn btn-sm"
                 data-hx-delete="{% url 'calorietracker:updateentry' food.id %}"
@@ -74,12 +74,3 @@
   {% endfor %}
   </tbody>
 </table>
-
-<style>
-  .actionc {
-    display: none;
-  }
-  .actionss {
-    display: flex;
-  }
-</style>
