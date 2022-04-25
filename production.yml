@@ -11,6 +11,7 @@ services:
       dockerfile: ./compose/production/django/Dockerfile
     image: home_health_hub_production_django
     platform: linux/x86_64
+    restart: unless-stopped
     depends_on:
       - postgres
       - redis
