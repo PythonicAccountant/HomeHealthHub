@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=home_health_hub
+POSTGRES_USER=ykzWozcHIqXKmkvpAoBghdxfslOptbKj
+POSTGRES_PASSWORD=pGuS6H09a6fbM6jbwpJjULCdFODSs01sbDqF4nk3eoKp2FpVc7JQPXd8aixSAPLS
