@@ -1,5 +1,7 @@
 {% load static %}
 
+<div class="row justify-content-center">
+  <div class="col-auto">
 <div class="container-fluid">
 
   <div class="text-right">
@@ -9,7 +11,7 @@
     <button class="btn btn-secondary" _="on click remove .actionshow from .actionhide then hide me then show the previous <button/>" style="display: none">
       Hide Actions
     </button>
-    <a data-hx-get="{% url 'calorietracker:newentry' %}" data-hx-target="#foodlog" class="btn btn-success" type="button">
+    <a data-hx-get="{% url 'calorietracker:food_add' %}" data-hx-target="#foodlog" class="btn btn-success" type="button">
       <i class="fa fa-plus"></i>
     </a>
   </div>
@@ -57,4 +59,6 @@
   </tbody>
 </table>
 
+</div>
+  </div>
 </div>

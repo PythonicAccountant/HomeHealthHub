@@ -66,7 +66,7 @@ class FoodLogItem(models.Model):
     food = models.ForeignKey(
         Food, on_delete=models.CASCADE, related_name="food_log_items"
     )
-    units_eaten = models.IntegerField()
+    units_eaten = models.DecimalField(decimal_places=1, max_digits=10)
     date_eaten = models.DateField(auto_now_add=True)
     category = models.CharField(max_length=1, choices=choices, default=SNACK)
 

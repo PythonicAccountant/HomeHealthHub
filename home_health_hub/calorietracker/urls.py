@@ -11,6 +11,7 @@ from .views import (
     get_uom,
     new_entry_view,
     new_food_view,
+    update_calorie_profile,
 )
 
 app_name = "calorietracker"
@@ -25,5 +26,10 @@ urlpatterns = [
     path("foods/add", view=new_food_view, name="food_add"),
     path("foods/delete/<int:id>/", view=food_delete_view, name="deletefood"),
     path("foods/update/<int:id>/", view=food_update_view, name="food_update"),
-    path("calorieprofile/", view=add_calorie_profile, name="add_calorie_profile"),
+    path("calorieprofile/add", view=add_calorie_profile, name="add_calorie_profile"),
+    path(
+        "calorieprofile/update/<int:id>/",
+        view=update_calorie_profile,
+        name="update_calorie_profile",
+    ),
 ]

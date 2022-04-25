@@ -241,3 +241,20 @@ def food_update_view(request, id):
             "calorietracker/fragments/food_update_fragment.html",
             {"form": form},
         )
+
+
+@login_required
+def update_calorie_profile(request, id):
+    calorie_profile = get_object_or_404(CalorieProfile, id=id)
+    if request.method == "POST":
+        form = CalorieProfileForm(request.POST, instance=calorie_profile)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse("home"))
+    else:
+        form = CalorieProfileForm(instance=calorie_profile)
+    return TemplateResponse(
+        request,
+        "calorietracker/calorie_profile_update.html",
+        {"form": form},
+    )
