@@ -255,6 +255,7 @@ LOGGING = {
 
 # django-allauth
 # ------------------------------------------------------------------------------
+SESSION_COOKIE_AGE = 20000000
 ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_AUTHENTICATION_METHOD = "username"
