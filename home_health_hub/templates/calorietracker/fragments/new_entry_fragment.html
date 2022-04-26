@@ -11,7 +11,7 @@
   {% url 'calorietracker:getuom' as getuom %}
       <div class="form-group">
         <label for="id_food">Food</label>
-        {% render_field form.food class="form-control" hx-post=getuom hx-target="#foodlog" hx-trigger="change"%}
+        {% render_field form.food class="form-control" hx-post=getuom hx-target="#foodlog" hx-trigger="change delay:800ms"%}
         <label for="id_units_eaten" id="uom">Grams Eaten</label>
         {% render_field form.units_eaten class="form-control" %}
         <label for="id_category" id="uom">Category</label>
