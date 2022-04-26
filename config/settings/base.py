@@ -276,3 +276,4 @@ SOCIALACCOUNT_FORMS = {"signup": "home_health_hub.users.forms.UserSocialSignupFo
 # Your stuff...
 # ------------------------------------------------------------------------------
 SESSION_COOKIE_AGE = 61449600
+ACCOUNT_SESSION_REMEMBER = True
