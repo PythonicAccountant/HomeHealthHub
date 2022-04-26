@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -129,11 +129,40 @@ def food_log_delete_view(request, id):
 @login_required
 def get_uom(request):
     if request.method == "POST":
-        food_post = request.POST.get("food")
-        food = Food.objects.get(id=food_post)
-        uom = food.get_uom_display()
-        uom = uom.capitalize() + " Eaten"
-        return HttpResponse(uom)
+        if request.META.get("HTTP_HX_REQUEST"):
+            context = {}
+            food_post = request.POST.get("food")
+            units_eaten = request.POST.get("units_eaten")
+            if units_eaten == "":
+                units_eaten = "0.0"
+
+            food = Food.objects.get(id=food_post)
+
+            context["form"] = FoodLogForm(request.POST)
+            context["food"] = food
+            context["estimated_calories"] = float(
+                food.calorie_per_serving_unit
+            ) * float(units_eaten)
+            return TemplateResponse(
+                request,
+                "calorietracker/fragments/new_entry_est_cal_fragments.html",
+                context,
+            )
+
+        # else:
+        #     form = FoodLogForm(request.POST)
+        #     # check whether it's valid:
+        #     if form.is_valid():
+        #         entry = form.save(commit=False)
+        #         entry.user = request.user
+        #         entry.save()
+        #         return HttpResponseRedirect(reverse("calorietracker:dailydash"))
+        #
+        # food_post = request.POST.get("food")
+        # food = Food.objects.get(id=food_post)
+        # uom = food.get_uom_display()
+        # uom = uom.capitalize() + " Eaten"
+        # return HttpResponse(uom)
 
 
 @login_required
