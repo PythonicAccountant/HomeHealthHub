@@ -12,8 +12,8 @@
       <div class="form-group">
         <label for="id_food">Food</label>
         {% render_field form.food class="form-control" hx-post=getuom hx-target="#foodlog" hx-trigger="change"%}
-        <label for="id_units_eaten" id="uom">Grams Eaten</label>
-        {% render_field form.units_eaten class="form-control" %}
+        <label for="id_units_eaten" id="uom">{{ food.get_uom_display|capfirst }} Eaten</label>
+        {% render_field form.units_eaten class="form-control" hx-post=getuom hx-target="#foodlog" hx-trigger="change" %}
         <label for="id_category" id="uom">Category</label>
         {% render_field form.category class="form-control" %}
       </div>
@@ -24,5 +24,13 @@
       </button>
     </div>
      </form>
+    <div class="row" style="justify-content: left">
+      <h6 style="padding-right: 5px">Calories per serving:</h6>
+      <h6 style="color: #98dbcc">{{ food.calories|floatformat:0 }} per {{ food.serving_unit|floatformat:0 }} {{ food.uom }}</h6>
+    </div>
+    <div class="row" style="justify-content: left">
+      <h6 style="padding-right: 5px">Est. Calories per qty input:</h6>
+      <h6 style="color: #98dbcc">{{ estimated_calories|floatformat:0 }}</h6>
+    </div>
   </div>
 </div>
