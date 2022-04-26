@@ -143,4 +143,3 @@ LOGGING = {
 
 # Your stuff...
 # ------------------------------------------------------------------------------
-SESSION_EXPIRE_AT_BROWSER_CLOSE = False

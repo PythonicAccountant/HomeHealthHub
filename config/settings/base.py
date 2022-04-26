@@ -255,7 +255,7 @@ LOGGING = {
 
 # django-allauth
 # ------------------------------------------------------------------------------
-SESSION_COOKIE_AGE = 20000000
+# SESSION_COOKIE_AGE = 2000000
 ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_AUTHENTICATION_METHOD = "username"
@@ -275,3 +275,4 @@ SOCIALACCOUNT_FORMS = {"signup": "home_health_hub.users.forms.UserSocialSignupFo
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+SESSION_COOKIE_AGE = 61449600
