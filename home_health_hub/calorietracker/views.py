@@ -60,7 +60,8 @@ def new_entry_view(request):
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = FoodLogForm()
+        initial_dict = FoodLogForm.get_initial_for_category()
+        form = FoodLogForm(initial=initial_dict)
 
     if not request.META.get("HTTP_HX_REQUEST"):
         return TemplateResponse(request, "calorietracker/newentry.html", {"form": form})
