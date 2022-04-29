@@ -3,6 +3,7 @@ from django.urls import path
 from .views import (
     add_calorie_profile,
     add_to_todoist_project_view,
+    bulk_todoist_view,
     food_delete_view,
     food_filter_view,
     food_list_view,
@@ -33,6 +34,11 @@ urlpatterns = [
         "foods/todoist/add/<int:id>/",
         view=add_to_todoist_project_view,
         name="todoist_add",
+    ),
+    path(
+        "foods/todoist/add/bulk/",
+        view=bulk_todoist_view,
+        name="todoist_add_bulk",
     ),
     path("calorieprofile/add", view=add_calorie_profile, name="add_calorie_profile"),
     path(

@@ -1,15 +1,5 @@
 {% load static %}
 
-{% if messages %}
-  {% for message in messages %}
-    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-      {{ message }}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-  {% endfor %}
-{% endif %}
 
 <div class="row justify-content-center">
   <div class="col-auto">
@@ -20,11 +10,22 @@
   <button class="btn btn-secondary" _="on click remove .actionshow from .actionhide then hide me then show the previous <button/>" style="display: none">
     Hide Actions
   </button>
+  <button class="btn btn-primary" id="bulk_todoist" style="display: none" hx-post="{% url 'calorietracker:todoist_add_bulk' %}"
+  hx-include="#ftable" hx-target="#messages">
+    Bulk Send to Todoist
+  </button>
 </div>
 
+  <form id="ftable">
 <table class="table table-striped">
   <thead>
   <tr>
+    <th>
+      <div class="custom-checkbox">
+        <input class="hcb" type="checkbox" id="checkbox-0" value="" _="on change set .cb.checked to me.checked if me.checked is true show #bulk_todoist else hide #bulk_todoist">
+        <label for="checkbox-0" class="blank"></label>
+      </div>
+    </th>
     <th>Food</th>
     <th>Units Consumed</th>
     <th>UOM</th>
@@ -35,6 +36,15 @@
 
   {% for obj in filter.qs %}
     <tr>
+    <td>
+      <div class="custom-checkbox">
+        <input name="names" class="cb" type="checkbox" id="checkbox-{{ obj.food__id }}" value="{{ obj.food__name }}"
+        _="on change if .cb.checked.length == .cb.length then set .hcb.checked to true else set .hcb.checked to false then hide #bulk_todoist
+         end on change if .cb.checked.length > 0 show #bulk_todoist">
+        <label for="checkbox-{{ obj.food__id }}" class="blank"></label>
+
+      </div>
+    </td>
       <td> {{ obj.food__name }} </td>
       <td> {{ obj.units_eaten__sum|floatformat }}</td>
       <td> {{ obj.food__uom}}</td>
@@ -53,6 +63,7 @@
   {% endfor %}
   </tbody>
 </table>
+  </form>
 
   </div>
 </div>
