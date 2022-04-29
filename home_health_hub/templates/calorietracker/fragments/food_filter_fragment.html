@@ -1,0 +1,58 @@
+{% load static %}
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  {% endfor %}
+{% endif %}
+
+<div class="row justify-content-center">
+  <div class="col-auto">
+<div class="text-right">
+  <button class="btn btn-primary" _="on click add .actionshow to .actionhide then hide me then show the next <button/>">
+    Show Actions
+  </button>
+  <button class="btn btn-secondary" _="on click remove .actionshow from .actionhide then hide me then show the previous <button/>" style="display: none">
+    Hide Actions
+  </button>
+</div>
+
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>Food</th>
+    <th>Units Consumed</th>
+    <th>UOM</th>
+    <th class="actionhide">Action</th>
+  </tr>
+  </thead>
+  <tbody>
+
+  {% for obj in filter.qs %}
+    <tr>
+      <td> {{ obj.food__name }} </td>
+      <td> {{ obj.units_eaten__sum|floatformat }}</td>
+      <td> {{ obj.food__uom}}</td>
+      <td class="actionhide">
+          <button class="btn btn-primary btn-sm"
+                  data-hx-get="{% url 'calorietracker:todoist_add' obj.food__id %}"
+                  data-hx-confirm="Are you sure you want to add this to Todoist?"
+                  data-hx-target="#filter_result_div"
+                  data-hx-swap="innerHTML"
+          >
+          <i class="fa fa-list"></i>
+            Add to Todoist
+          </button>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+  </div>
+</div>

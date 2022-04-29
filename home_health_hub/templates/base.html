@@ -66,6 +66,9 @@
             <li class="nav-item">
               <a href="{% url 'calorietracker:food_list' %}" class="nav-link">Foods</a>
             </li>
+            <li class="nav-item">
+              <a href="{% url 'calorietracker:food_filter' %}" class="nav-link">Food Log Reporting</a>
+            </li>
           </ul>
 
           <ul class="navbar-nav d-none d-md-flex ml-auto"> <!-- d-none = display: none, d-md-flex = display: flex on medium screens and up (width > 768px) -->
@@ -100,6 +103,11 @@
                 <a href="{% url 'calorietracker:dailydash' %}" class="dropdown-item">Daily Dashboard</a>
                 <a href="{% url 'calorietracker:food_list' %}"
                    class="dropdown-item">Foods</a>
+                <a href="{% url 'calorietracker:food_filter' %}"
+                   class="dropdown-item">Food Log Reporting</a>
+                  <div class="dropdown-divider"></div>
+                  <div class="dropdown-divider"></div>
+
                 {% if user.is_authenticated %}
                   <a class="dropdown-item" href="{% url 'users:detail' request.user.username  %}">{% translate "My Profile" %}</a>
                   <a class="dropdown-item" href="{% url 'account_logout' %}">{% translate "Sign Out" %}</a>

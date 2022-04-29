@@ -8,29 +8,39 @@
     <div class="container-fluid">
       <div class="row justify-content-center">
         <div class="col-md-3 col-sm-6">
-      <div class="card text-center">
-      <h2 class="card-title">
-        Food Log
-      </h2>
-        <div style="display: flex; flex-direction: column">
-        <a class="hyperlink" href="{% url 'calorietracker:dailydash' %}">Daily Dashboard</a>
-        <a class="hyperlink" href="#">Daily History</a>
-        <a class="hyperlink" href="{% url 'calorietracker:newentry' %}">Add food log entry</a>
+          <div class="card text-center">
+            <h2 class="card-title">
+              Food Log
+            </h2>
+            <div style="display: flex; flex-direction: column">
+              <a class="hyperlink" href="{% url 'calorietracker:dailydash' %}">Daily Dashboard</a>
+              <a class="hyperlink" href="{% url 'calorietracker:newentry' %}">Add food log entry</a>
+            </div>
           </div>
-      </div>
         </div>
         <div class="col-md-3 col-sm-6">
-      <div class="card text-center">
-        <h2 class="card-title">
-         Food List
-        </h2>
-        <div style="display: flex; flex-direction: column">
-        <a class="hyperlink" href="{% url 'calorietracker:food_list' %}">Food List</a>
-        <a class="hyperlink" href="{% url 'calorietracker:food_add' %}">Add food</a>
-        </div>
-      </div>
+          <div class="card text-center">
+            <h2 class="card-title">
+              Food List
+            </h2>
+            <div style="display: flex; flex-direction: column">
+              <a class="hyperlink" href="{% url 'calorietracker:food_list' %}">Food List</a>
+              <a class="hyperlink" href="{% url 'calorietracker:food_add' %}">Add food</a>
+            </div>
           </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="card text-center">
+            <h2 class="card-title">
+              Reports
+            </h2>
+            <div style="display: flex; flex-direction: column">
+              <a class="hyperlink" href="{% url 'calorietracker:food_filter' %}">Food Log Reporting</a>
+            </div>
+          </div>
+      </div>
+      </div>
     </div>
+
     </div>
-  </div>
 {% endblock %}

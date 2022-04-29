@@ -49,6 +49,11 @@ class FoodLogQuerySet(models.QuerySet):
             )
         )
 
+    def distinct_qty(self):
+        return self.values("food__name", "food__id", "food__uom").annotate(
+            Sum("units_eaten")
+        )
+
 
 class FoodLogItem(models.Model):
     BREAKFAST = "1"
@@ -78,3 +83,9 @@ class FoodLogItem(models.Model):
     @property
     def calories_consumed(self):
         return self.units_eaten * self.food.calorie_per_serving_unit
+
+
+class IntegrationProfile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    todoist_api_key = models.CharField(max_length=200, blank=True, null=True)
+    todoist_target_project = models.CharField(max_length=200, blank=True, null=True)
