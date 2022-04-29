@@ -50,8 +50,10 @@ class FoodLogQuerySet(models.QuerySet):
         )
 
     def distinct_qty(self):
-        return self.values("food__name", "food__id", "food__uom").annotate(
-            Sum("units_eaten")
+        return (
+            self.values("food__name", "food__id", "food__uom")
+            .annotate(Sum("units_eaten"))
+            .order_by("food__name")
         )
 
 
