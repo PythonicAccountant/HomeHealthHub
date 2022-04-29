@@ -10,7 +10,7 @@ from django.urls import reverse
 from .filters import FoodLogItemFilter
 from .forms import CalorieProfileForm, FoodForm, FoodLogForm
 from .models import CalorieProfile, Food, FoodLogItem, IntegrationProfile
-from .todoist import add_to_todoist
+from .todoist import add_to_todoist, bulk_add_to_todoist
 
 
 @login_required
@@ -302,7 +302,10 @@ def add_to_todoist_project_view(request, id):
         messages.success(request, message=f"{food.name} added to Todoist successfully!")
     else:
         messages.error(request, message="Error adding to Todoist")
-    return HttpResponseRedirect(reverse("calorietracker:food_filter"))
+    return TemplateResponse(
+        request,
+        "calorietracker/fragments/message_fragment.html",
+    )
 
 
 def food_filter_view(request):
@@ -318,4 +321,23 @@ def food_filter_view(request):
             request,
             "calorietracker/fragments/food_filter_fragment.html",
             {"filter": f},
+        )
+
+
+@login_required
+def bulk_todoist_view(request):
+    if request.method == "POST":
+        bulk_list = request.POST.getlist("names")
+        integration_profile = IntegrationProfile.objects.get(user=request.user)
+        success = bulk_add_to_todoist(bulk_list, integration_profile)
+        if success:
+            messages.success(
+                request,
+                message=f"{len(bulk_list)} items added to Todoist successfully!",
+            )
+        else:
+            messages.error(request, message="Error adding to Todoist")
+        return TemplateResponse(
+            request,
+            "calorietracker/fragments/message_fragment.html",
         )
