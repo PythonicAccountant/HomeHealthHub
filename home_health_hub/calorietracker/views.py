@@ -1,13 +1,16 @@
 from datetime import datetime
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
 
+from .filters import FoodLogItemFilter
 from .forms import CalorieProfileForm, FoodForm, FoodLogForm
-from .models import CalorieProfile, Food, FoodLogItem
+from .models import CalorieProfile, Food, FoodLogItem, IntegrationProfile
+from .todoist import add_to_todoist
 
 
 @login_required
@@ -288,3 +291,31 @@ def update_calorie_profile(request, id):
         "calorietracker/calorie_profile_update.html",
         {"form": form},
     )
+
+
+@login_required
+def add_to_todoist_project_view(request, id):
+    food = Food.objects.get(id=id)
+    integration_profile = IntegrationProfile.objects.get(user=request.user)
+    success = add_to_todoist(item=food.name, integration_profile=integration_profile)
+    if success:
+        messages.success(request, message=f"{food.name} added to Todoist successfully!")
+    else:
+        messages.error(request, message="Error adding to Todoist")
+    return HttpResponseRedirect(reverse("calorietracker:food_filter"))
+
+
+def food_filter_view(request):
+    f = FoodLogItemFilter(request.GET, queryset=FoodLogItem.objects.distinct_qty())
+
+    if not request.META.get("HTTP_HX_REQUEST"):
+        return TemplateResponse(
+            request, "calorietracker/food_filter.html", {"filter": f}
+        )
+
+    else:
+        return TemplateResponse(
+            request,
+            "calorietracker/fragments/food_filter_fragment.html",
+            {"filter": f},
+        )

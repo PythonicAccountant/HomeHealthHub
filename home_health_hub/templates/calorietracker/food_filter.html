@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Food Filter{% endblock %}
+
+{% block content %}
+  <div class="content">
+    <div class="container-fluid">
+      {% url 'calorietracker:food_filter' as filter_url %}
+  <div class="row justify-content-center">
+    <div class="col-auto">
+      <div class="d-flex align-items-end flex column">
+        <button class="btn btn-sm btn-primary ml-auto" id="filter_clear" type="button" _="on click reset() the #filters then hide me"
+                data-hx-push-url="true" data-hx-get="{{ filter_url }}" data-hx-target="#filter_result_div">Clear filters</button>
+      </div>
+
+        <form id="filters" data-hx-push-url="true" data-hx-include="#filters" _="on load hide #filter_clear then on every htmx:afterOnLoad show #filter_clear">
+          <div class="form-row row-eq-spacing-sm">
+           <div class="col-sm">
+             <label for="id_user__username">User</label>
+             {% render_field filter.form.user__username class="form-control" hx-get=filter_url hx-target="#filter_result_div" hx-trigger="change" %}
+           </div>
+
+            <div class="col-sm">
+              <label for="id_weeks">Past N Weeks</label>
+              {% render_field filter.form.weeks class="form-control" hx-get=filter_url hx-target="#filter_result_div" hx-trigger="change" %}
+            </div>
+          </div>
+        </form>
+    </div>
+  </div>
+      <div id="filter_result_div">
+        {% include 'calorietracker/fragments/food_filter_fragment.html' %}
+      </div>
+
+
+    </div>
+  </div>
+{% endblock content %}
