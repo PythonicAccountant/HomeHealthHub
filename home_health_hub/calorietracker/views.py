@@ -9,34 +9,26 @@ from django.urls import reverse
 
 from .filters import FoodLogItemFilter
 from .forms import CalorieProfileForm, FoodForm, FoodLogForm
-from .models import CalorieProfile, Food, FoodLogItem, IntegrationProfile
+from .models import CalorieProfile, Food, FoodLog, FoodLogItem, IntegrationProfile
 from .todoist import add_to_todoist, bulk_add_to_todoist
 
 
 @login_required
-def food_log_list_view(request):
-    try:
-        food_items = FoodLogItem.objects.filter(
-            user=request.user, date_eaten=datetime.today()
-        ).order_by("category")
-    except FoodLogItem.DoesNotExist:
-        food_items = {}
-
-    # food_items = FoodLogItem.objects.all()
-    total = FoodLogItem.objects.calorie_total_day(
-        date=datetime.today(), user=request.user
+def daily_dash_view(request):
+    food_log, created = FoodLog.objects.get_or_create(
+        user=request.user, date=datetime.today()
     )
-    if total["total"] is None:
-        total = {"total": 0}
+
     try:
         calorie_goal = CalorieProfile.objects.get(user=request.user)
     except CalorieProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("calorietracker:add_calorie_profile"))
 
-    calories_remaining = calorie_goal.daily_calorie_goal - total["total"]
-    perc = (total["total"] / calorie_goal.daily_calorie_goal) * 100
+    total = food_log.calorie_total
+    calories_remaining = calorie_goal.daily_calorie_goal - total
+    perc = (total / calorie_goal.daily_calorie_goal) * 100
     context = {
-        "object": food_items,
+        "object": food_log,
         "total": total,
         "calorie_goal": calorie_goal,
         "rem": calories_remaining,
@@ -45,19 +37,24 @@ def food_log_list_view(request):
 
     if not request.META.get("HTTP_HX_REQUEST"):
         return TemplateResponse(request, "calorietracker/dailydash.html", context)
-    return TemplateResponse(request, "calorietracker/fragments/foodlog.html", context)
+    return TemplateResponse(
+        request, "calorietracker/fragments/dailydash_fragment.html", context
+    )
 
 
 @login_required
-def new_entry_view(request):
+def food_log_item_create_view(request):
     # if this is a POST request we need to process the form data
+    food_log, created = FoodLog.objects.get_or_create(
+        user=request.user, date=datetime.today()
+    )
     if request.method == "POST":
         # create a form instance and populate it with data from the request:
         form = FoodLogForm(request.POST)
         # check whether it's valid:
         if form.is_valid():
             entry = form.save(commit=False)
-            entry.user = request.user
+            entry.food_log = food_log
             entry.save()
             return HttpResponseRedirect(reverse("calorietracker:dailydash"))
 
@@ -67,15 +64,19 @@ def new_entry_view(request):
         form = FoodLogForm(initial=initial_dict)
 
     if not request.META.get("HTTP_HX_REQUEST"):
-        return TemplateResponse(request, "calorietracker/newentry.html", {"form": form})
+        return TemplateResponse(
+            request, "calorietracker/food_log_item_form.html", {"form": form}
+        )
     else:
         return TemplateResponse(
-            request, "calorietracker/fragments/new_entry_fragment.html", {"form": form}
+            request,
+            "calorietracker/fragments/food_log_item_form_fragment.html",
+            {"form": form},
         )
 
 
 @login_required
-def food_log_update_view(request, id):
+def food_log_item_update_view(request, id):
     food_log = get_object_or_404(FoodLogItem, id=id)
     if request.method == "POST":
         form = FoodLogForm(request.POST, instance=food_log)
@@ -92,46 +93,20 @@ def food_log_update_view(request, id):
     else:
         return TemplateResponse(
             request,
-            "calorietracker/fragments/food_log_update_fragment.html",
+            "calorietracker/fragments/food_log_item_update_form_fragment.html",
             {"form": form},
         )
 
 
 @login_required
-def food_log_delete_view(request, id):
+def food_log_item_delete_view(request, id):
     obj = get_object_or_404(FoodLogItem, id=id)
     obj.delete()
-    if not request.META.get("HTTP_HX_REQUEST"):
-        return HttpResponseRedirect(reverse("calorietracker:dailydash"))
-    else:
-        try:
-            food_items = FoodLogItem.objects.filter(
-                user=request.user, date_eaten=datetime.today()
-            )
-        except FoodLogItem.DoesNotExist:
-            food_items = {}
-
-        # food_items = FoodLogItem.objects.all()
-        total = FoodLogItem.objects.calorie_total_day(
-            date=datetime.today(), user=request.user
-        )
-        if total["total"] is None:
-            total = {"total": 0}
-        calorie_goal = CalorieProfile.objects.get(user=request.user)
-        calories_remaining = calorie_goal.daily_calorie_goal - total["total"]
-        context = {
-            "object": food_items,
-            "total": total,
-            "calorie_goal": calorie_goal,
-            "rem": calories_remaining,
-        }
-        return TemplateResponse(
-            request, "calorietracker/fragments/foodlog.html", context
-        )
+    return HttpResponseRedirect(reverse("calorietracker:dailydash"))
 
 
 @login_required
-def get_uom(request):
+def get_uom_view(request):
     if request.method == "POST":
         if request.META.get("HTTP_HX_REQUEST"):
             context = {}
@@ -149,31 +124,16 @@ def get_uom(request):
             ) * float(units_eaten)
             return TemplateResponse(
                 request,
-                "calorietracker/fragments/new_entry_est_cal_fragments.html",
+                "calorietracker/fragments/food_log_item_est_cal_fragment.html",
                 context,
             )
-
-        # else:
-        #     form = FoodLogForm(request.POST)
-        #     # check whether it's valid:
-        #     if form.is_valid():
-        #         entry = form.save(commit=False)
-        #         entry.user = request.user
-        #         entry.save()
-        #         return HttpResponseRedirect(reverse("calorietracker:dailydash"))
-        #
-        # food_post = request.POST.get("food")
-        # food = Food.objects.get(id=food_post)
-        # uom = food.get_uom_display()
-        # uom = uom.capitalize() + " Eaten"
-        # return HttpResponse(uom)
 
 
 @login_required
 def food_list_view(request):
     context = get_food_context()
     if not request.META.get("HTTP_HX_REQUEST"):
-        return TemplateResponse(request, "calorietracker/food_log_list.html", context)
+        return TemplateResponse(request, "calorietracker/food_list.html", context)
     else:
         return TemplateResponse(
             request, "calorietracker/fragments/food_list_fragment.html", context
@@ -187,7 +147,7 @@ def food_delete_view(request, id):
 
     context = get_food_context()
     if not request.META.get("HTTP_HX_REQUEST"):
-        return TemplateResponse(request, "calorietracker/food_log_list.html", context)
+        return TemplateResponse(request, "calorietracker/food_list.html", context)
     else:
         return TemplateResponse(
             request, "calorietracker/fragments/food_list_fragment.html", context
@@ -201,7 +161,7 @@ def get_food_context():
 
 
 @login_required
-def new_food_view(request):
+def food_create_view(request):
     # if this is a POST request we need to process the form data
     if request.method == "POST":
         # create a form instance and populate it with data from the request:
@@ -210,22 +170,24 @@ def new_food_view(request):
         if form.is_valid():
             entry = form.save(commit=False)
             entry.save()
-            return HttpResponseRedirect(reverse("calorietracker:food_list"))
+            return HttpResponseRedirect(reverse("calorietracker:Food-list"))
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = FoodForm()
 
     if not request.META.get("HTTP_HX_REQUEST"):
-        return TemplateResponse(request, "calorietracker/new_food.html", {"form": form})
+        return TemplateResponse(
+            request, "calorietracker/food_form.html", {"form": form}
+        )
     else:
         return TemplateResponse(
-            request, "calorietracker/fragments/new_food_fragment.html", {"form": form}
+            request, "calorietracker/fragments/food_form_fragment.html", {"form": form}
         )
 
 
 @login_required
-def add_calorie_profile(request):
+def calorie_profile_create_view(request):
     # if this is a POST request we need to process the form data
     if request.method == "POST":
         # create a form instance and populate it with data from the request:
@@ -260,7 +222,7 @@ def food_update_view(request, id):
         form = FoodForm(request.POST, instance=food)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse("calorietracker:food_list"))
+            return HttpResponseRedirect(reverse("calorietracker:Food-list"))
     else:
         form = FoodForm(instance=food)
 
@@ -277,7 +239,7 @@ def food_update_view(request, id):
 
 
 @login_required
-def update_calorie_profile(request, id):
+def calorie_profile_update_view(request, id):
     calorie_profile = get_object_or_404(CalorieProfile, id=id)
     if request.method == "POST":
         form = CalorieProfileForm(request.POST, instance=calorie_profile)

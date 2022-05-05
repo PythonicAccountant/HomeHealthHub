@@ -12,7 +12,7 @@
     <button class="btn btn-secondary" _="on click remove .actionshow from .actionhide then hide me then show the previous <button/>" style="display: none">
       Hide Actions
     </button>
-    <a data-hx-get="{% url 'calorietracker:food_add' %}" data-hx-target="#foodlog" class="btn btn-success" type="button">
+    <a data-hx-get="{% url 'calorietracker:Food-create' %}" data-hx-target="#foodlog" class="btn btn-success" type="button">
       <i class="fa fa-plus"></i>
     </a>
   </div>
@@ -38,7 +38,7 @@
       <td class="actionhide">
         <div style="display: flex; justify-content: space-between">
           <button class="btn btn-sm"
-                  data-hx-delete="{% url 'calorietracker:food_update' food.id %}"
+                  data-hx-delete="{% url 'calorietracker:Food-update' food.id %}"
                   data-hx-target="#foodlog"
                   data-hx-push-url="true"
                   data-hx-swap="innerHTML"
@@ -46,7 +46,7 @@
             <i class="fa fa-pencil"></i>
           </button>
           <button class="btn btn-danger btn-sm"
-                  data-hx-delete="{% url 'calorietracker:deletefood' food.id %}"
+                  data-hx-delete="{% url 'calorietracker:Food-delete' food.id %}"
                   data-hx-confirm="Are you sure you want to delete this?"
                   data-hx-target="#foodlog"
                   data-hx-swap="innerHTML"

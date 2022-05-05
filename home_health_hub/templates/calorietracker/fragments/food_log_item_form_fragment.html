@@ -2,19 +2,19 @@
 
 <div class="row justify-content-center">
   <div class="col-auto">
-     <form data-hx-post="{% url 'calorietracker:newentry' %}" data-hx-target="#foodlog">
+     <form data-hx-post="{% url 'calorietracker:FoodLogItem-create' %}" data-hx-target="#foodlog">
     {% csrf_token %}
 
-    {% for hidden in form.hidden_fields %}
-      {{ hidden }}
-    {% endfor %}
   {% url 'calorietracker:getuom' as getuom %}
       <div class="form-group">
         <label for="id_food">Food</label>
+        {{ form.food.errors }}
         {% render_field form.food class="form-control" hx-post=getuom hx-target="#foodlog" hx-trigger="change delay:800ms"%}
         <label for="id_units_eaten" id="uom">Grams Eaten</label>
+        {{ form.units_eaten.errors }}
         {% render_field form.units_eaten class="form-control" %}
         <label for="id_category" id="uom">Category</label>
+        {{ form.category.errors }}
         {% render_field form.category class="form-control" %}
       </div>
 
