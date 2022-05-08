@@ -1,0 +1,41 @@
+{% load static %}
+
+
+<div class="row justify-content-center">
+  <div class="col-auto">
+<div class="container-fluid">
+
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>Date</th>
+    <th class="text-right">Calories</th>
+    <th>Action</th>
+  </tr>
+  </thead>
+  <tbody>
+
+  {% for foodlog in object %}
+    <tr>
+      <td> {{ foodlog.date }} </td>
+      <td class="text-right"> {{ foodlog.total|floatformat:0 }}</td>
+      <td>
+        <div style="display: flex; justify-content: space-between">
+          <button class="btn btn-sm"
+                  data-hx-delete="{% url 'calorietracker:FoodLog-detail' foodlog.id %}"
+                  data-hx-target="#foodlog"
+                  data-hx-push-url="true"
+                  data-hx-swap="innerHTML"
+          >
+            <i class="fa fa-eye"></i>
+          </button>
+        </div>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+</div>
+  </div>
+</div>

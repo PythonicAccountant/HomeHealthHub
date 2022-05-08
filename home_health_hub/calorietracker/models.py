@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models
-from django.db.models import F, Sum
+from django.db.models import DecimalField, F, Sum
+from django.db.models import Value as V
+from django.db.models.functions import Coalesce
 
 
 class Food(models.Model):
@@ -38,6 +40,60 @@ class CalorieProfile(models.Model):
 
 
 class FoodLogQuerySet(models.QuerySet):
+    def calorie_total_day(self):
+        return self.annotate(
+            total=Coalesce(
+                Sum(
+                    F("food_log_items__units_eaten")
+                    * F("food_log_items__food__calories")
+                    / F("food_log_items__food__serving_unit")
+                ),
+                V(0),
+                output_field=DecimalField(),
+            )
+        ).order_by("-date")
+
+
+class FoodLog(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    date = models.DateField()
+
+    objects = FoodLogQuerySet.as_manager()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "date"], name="unique Foodlog per user"
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.user} - {self.date}"
+
+    @property
+    def calorie_total(self):
+        return (
+            self.food_log_items.aggregate(
+                total=Sum(
+                    F("units_eaten") * F("food__calories") / F("food__serving_unit")
+                )
+            )["total"]
+            or 0
+        )
+
+    @property
+    def calories_remaining(self):
+        return (
+            self.food_log_items.aggregate(
+                rem=Sum(
+                    F("units_eaten") * F("food__calories") / F("food__serving_unit")
+                )
+            )["rem"]
+            or 0
+        )
+
+
+class FoodLogItemQuerySet(models.QuerySet):
     def calorie_total_day(self, date, user):
         return (
             self.filter(date_eaten=date)
@@ -69,18 +125,21 @@ class FoodLogItem(models.Model):
         (DINNER, "Dinner"),
         (SNACK, "Snack"),
     ]
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    food_log = models.ForeignKey(
+        FoodLog, on_delete=models.CASCADE, related_name="food_log_items"
+    )
     food = models.ForeignKey(
         Food, on_delete=models.CASCADE, related_name="food_log_items"
     )
     units_eaten = models.DecimalField(decimal_places=1, max_digits=10)
-    date_eaten = models.DateField(auto_now_add=True)
+    # date_eaten = models.DateField(auto_now_add=True)
     category = models.CharField(max_length=1, choices=choices, default=SNACK)
 
-    objects = FoodLogQuerySet.as_manager()
+    objects = FoodLogItemQuerySet.as_manager()
 
     def __str__(self):
-        return f"{self.user} - {self.food} - {self.date_eaten}"
+        return f"{self.food_log.user} - {self.food} - {self.food_log.date}"
 
     @property
     def calories_consumed(self):

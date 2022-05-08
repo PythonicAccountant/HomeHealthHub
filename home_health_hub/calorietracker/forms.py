@@ -9,7 +9,7 @@ from .models import CalorieProfile, Food, FoodLogItem
 class FoodLogForm(ModelForm):
     class Meta:
         model = FoodLogItem
-        exclude = ("user",)
+        exclude = ("food_log",)
 
     @staticmethod
     def get_initial_for_category():
