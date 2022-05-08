@@ -303,3 +303,42 @@ def bulk_todoist_view(request):
             request,
             "calorietracker/fragments/message_fragment.html",
         )
+
+
+def food_log_list_view(request):
+    context = {}
+    context["object"] = (
+        FoodLog.objects.filter(user=request.user).calorie_total_day().all()
+    )
+
+    if not request.META.get("HTTP_HX_REQUEST"):
+        return TemplateResponse(request, "calorietracker/food_log_list.html", context)
+    return TemplateResponse(
+        request, "calorietracker/fragments/food_log_list_fragment.html", context
+    )
+
+
+def food_log_detail_view(request, id):
+    food_log = get_object_or_404(FoodLog, id=id)
+
+    try:
+        calorie_goal = CalorieProfile.objects.get(user=request.user)
+    except CalorieProfile.DoesNotExist:
+        return HttpResponseRedirect(reverse("calorietracker:add_calorie_profile"))
+
+    total = food_log.calorie_total
+    calories_remaining = calorie_goal.daily_calorie_goal - total
+    perc = (total / calorie_goal.daily_calorie_goal) * 100
+    context = {
+        "object": food_log,
+        "total": total,
+        "calorie_goal": calorie_goal,
+        "rem": calories_remaining,
+        "perc": perc,
+    }
+
+    if not request.META.get("HTTP_HX_REQUEST"):
+        return TemplateResponse(request, "calorietracker/dailydash.html", context)
+    return TemplateResponse(
+        request, "calorietracker/fragments/dailydash_fragment.html", context
+    )

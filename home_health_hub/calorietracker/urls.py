@@ -1,61 +1,52 @@
 from django.urls import path
 
-from .views import (
-    add_to_todoist_project_view,
-    bulk_todoist_view,
-    calorie_profile_create_view,
-    calorie_profile_update_view,
-    daily_dash_view,
-    food_create_view,
-    food_delete_view,
-    food_filter_view,
-    food_list_view,
-    food_log_item_create_view,
-    food_log_item_delete_view,
-    food_log_item_update_view,
-    food_update_view,
-    get_uom_view,
-)
+from . import views
 
 app_name = "calorietracker"
 
 urlpatterns = [
-    path("", view=daily_dash_view, name="dailydash"),
-    path("foodlogitem/add/", view=food_log_item_create_view, name="FoodLogItem-create"),
+    path("", view=views.daily_dash_view, name="dailydash"),
+    path(
+        "foodlogitem/add/",
+        view=views.food_log_item_create_view,
+        name="FoodLogItem-create",
+    ),
     path(
         "foodlogitem/delete/<int:id>/",
-        view=food_log_item_delete_view,
+        view=views.food_log_item_delete_view,
         name="FoodLogItem-delete",
     ),
     path(
         "foodlogitem/update/<int:id>/",
-        view=food_log_item_update_view,
+        view=views.food_log_item_update_view,
         name="FoodLogItem-update",
     ),
-    path("foodlogitem/getuom/", view=get_uom_view, name="getuom"),
-    path("food/", view=food_list_view, name="Food-list"),
-    path("food/filter", view=food_filter_view, name="Food-filter"),
-    path("food/add", view=food_create_view, name="Food-create"),
-    path("food/delete/<int:id>/", view=food_delete_view, name="Food-delete"),
-    path("food/update/<int:id>/", view=food_update_view, name="Food-update"),
+    path("foodlogitem/getuom/", view=views.get_uom_view, name="getuom"),
+    path("food/", view=views.food_list_view, name="Food-list"),
+    path("food/filter", view=views.food_filter_view, name="Food-filter"),
+    path("food/add", view=views.food_create_view, name="Food-create"),
+    path("food/delete/<int:id>/", view=views.food_delete_view, name="Food-delete"),
+    path("food/update/<int:id>/", view=views.food_update_view, name="Food-update"),
+    path("foodlog/", view=views.food_log_list_view, name="FoodLog-list"),
+    path("foodlog/<int:id>/", view=views.food_log_detail_view, name="FoodLog-detail"),
     path(
         "food/todoist/add/<int:id>/",
-        view=add_to_todoist_project_view,
+        view=views.add_to_todoist_project_view,
         name="todoist_add",
     ),
     path(
         "food/todoist/add/bulk/",
-        view=bulk_todoist_view,
+        view=views.bulk_todoist_view,
         name="todoist_add_bulk",
     ),
     path(
         "calorieprofile/add",
-        view=calorie_profile_create_view,
+        view=views.calorie_profile_create_view,
         name="calorie_profile_create_view",
     ),
     path(
         "calorieprofile/update/<int:id>/",
-        view=calorie_profile_update_view,
+        view=views.calorie_profile_update_view,
         name="calorie_profile_update_view",
     ),
 ]

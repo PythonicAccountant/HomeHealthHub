@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models
-from django.db.models import F, Sum
+from django.db.models import DecimalField, F, Sum
+from django.db.models import Value as V
+from django.db.models.functions import Coalesce
 
 
 class Food(models.Model):
@@ -39,9 +41,17 @@ class CalorieProfile(models.Model):
 
 class FoodLogQuerySet(models.QuerySet):
     def calorie_total_day(self):
-        return self.aggregate(
-            total=Sum(F("units_eaten") * F("food__calories") / F("food__serving_unit"))
-        )
+        return self.annotate(
+            total=Coalesce(
+                Sum(
+                    F("food_log_items__units_eaten")
+                    * F("food_log_items__food__calories")
+                    / F("food_log_items__food__serving_unit")
+                ),
+                V(0),
+                output_field=DecimalField(),
+            )
+        ).order_by("-date")
 
 
 class FoodLog(models.Model):
@@ -68,6 +78,17 @@ class FoodLog(models.Model):
                     F("units_eaten") * F("food__calories") / F("food__serving_unit")
                 )
             )["total"]
+            or 0
+        )
+
+    @property
+    def calories_remaining(self):
+        return (
+            self.food_log_items.aggregate(
+                rem=Sum(
+                    F("units_eaten") * F("food__calories") / F("food__serving_unit")
+                )
+            )["rem"]
             or 0
         )
 
