@@ -18,8 +18,8 @@
         <form id="filters" data-hx-push-url="true" data-hx-include="#filters" _="on load hide #filter_clear then on every htmx:afterOnLoad show #filter_clear">
           <div class="form-row row-eq-spacing-sm">
            <div class="col-sm">
-             <label for="id_user__username">User</label>
-             {% render_field filter.form.user__username class="form-control" hx-get=filter_url hx-target="#filter_result_div" hx-trigger="change" %}
+             <label for="id_food_log__user__username">User</label>
+             {% render_field filter.form.user class="form-control" hx-get=filter_url hx-target="#filter_result_div" hx-trigger="change" %}
            </div>
 
             <div class="col-sm">
