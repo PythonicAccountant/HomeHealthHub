@@ -1,6 +1,6 @@
 {% load widget_tweaks %}
 
-     <form action="{% url 'calorietracker:add_calorie_profile' %}" method="post">
+     <form action="{% url 'calorietracker:calorie_profile_create_view' %}" method="post">
     {% csrf_token %}
 
     {% for hidden in form.hidden_fields %}

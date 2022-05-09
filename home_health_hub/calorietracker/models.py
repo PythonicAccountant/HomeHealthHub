@@ -125,7 +125,6 @@ class FoodLogItem(models.Model):
         (DINNER, "Dinner"),
         (SNACK, "Snack"),
     ]
-    # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     food_log = models.ForeignKey(
         FoodLog, on_delete=models.CASCADE, related_name="food_log_items"
     )
@@ -133,10 +132,12 @@ class FoodLogItem(models.Model):
         Food, on_delete=models.CASCADE, related_name="food_log_items"
     )
     units_eaten = models.DecimalField(decimal_places=1, max_digits=10)
-    # date_eaten = models.DateField(auto_now_add=True)
     category = models.CharField(max_length=1, choices=choices, default=SNACK)
 
     objects = FoodLogItemQuerySet.as_manager()
+
+    class Meta:
+        ordering = ["category"]
 
     def __str__(self):
         return f"{self.food_log.user} - {self.food} - {self.food_log.date}"

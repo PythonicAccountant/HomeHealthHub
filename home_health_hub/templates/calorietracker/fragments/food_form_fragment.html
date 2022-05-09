@@ -2,7 +2,7 @@
 
 <div class="row justify-content-center">
   <div class="col-auto">
-     <form data-hx-post="{% url 'calorietracker:Food-add' %}" data-hx-target="#foodlog">
+     <form data-hx-post="{% url 'calorietracker:Food-create' %}" data-hx-target="#foodlog">
     {% csrf_token %}
 
     {% for hidden in form.hidden_fields %}
