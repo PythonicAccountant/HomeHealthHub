@@ -7,17 +7,18 @@ from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
 
-from django.db.models import Sum, F
 from .filters import FoodLogItemFilter
 from .forms import CalorieProfileForm, FoodForm, FoodLogForm
 from .models import CalorieProfile, Food, FoodLog, FoodLogItem, IntegrationProfile
 from .todoist import add_to_todoist, bulk_add_to_todoist
+
 
 def get_second_value(lst, first_value):
     for tup in lst:
         if tup[0] == first_value:
             return tup[1]
     return None
+
 
 @login_required
 def daily_dash_view(request):
@@ -28,11 +29,16 @@ def daily_dash_view(request):
     try:
         calorie_goal = CalorieProfile.objects.get(user=request.user)
     except CalorieProfile.DoesNotExist:
-        return HttpResponseRedirect(reverse("calorietracker:calorie_profile_create_view"))
+        return HttpResponseRedirect(
+            reverse("calorietracker:calorie_profile_create_view")
+        )
     # aggregate food log item total by category
 
     summary = food_log.calorie_total_by_category()
-    summary_dict = {get_second_value(FoodLogItem.choices,item["category"]): item["total"] for item in summary}
+    summary_dict = {
+        get_second_value(FoodLogItem.choices, item["category"]): item["total"]
+        for item in summary
+    }
 
     total = food_log.calorie_total
     calories_remaining = calorie_goal.daily_calorie_goal - total
@@ -340,7 +346,10 @@ def food_log_detail_view(request, id):
     # aggregate food log item total by category
 
     summary = food_log.calorie_total_by_category()
-    summary_dict = {get_second_value(FoodLogItem.choices,item["category"]): item["total"] for item in summary}
+    summary_dict = {
+        get_second_value(FoodLogItem.choices, item["category"]): item["total"]
+        for item in summary
+    }
 
     total = food_log.calorie_total
     calories_remaining = calorie_goal.daily_calorie_goal - total
