@@ -1,4 +1,4 @@
-
+{% load custom_filters %}
 <div class="row justify-content-center">
   <div class="col-auto">
 <div class="container-fluid">
@@ -45,7 +45,7 @@
 
   {% for category in food_by_category %}
     <tr style="background-color: #3E4349; font-weight: bold; line-height: 6px">
-    <td colspan="4" style="text-align: center">{{ category.grouper }}</td>
+    <td colspan="4" style="text-align: center">{{ category.grouper }} - {{ summary|get_item:category.grouper|floatformat:0 }} Total</td>
     </tr>
   {% for food in category.list %}
     <tr>

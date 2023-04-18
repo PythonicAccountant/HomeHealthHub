@@ -81,6 +81,9 @@ class FoodLog(models.Model):
             or 0
         )
 
+    def calorie_total_by_category(self):
+        return (self.food_log_items.values("category").annotate(total=Sum(F("units_eaten") * F("food__calories") / F("food__serving_unit"))))
+
     @property
     def calories_remaining(self):
         return (
