@@ -2,7 +2,6 @@ from todoist_api_python.api import TodoistAPI
 
 
 def add_to_todoist(item, integration_profile):
-
     api = TodoistAPI(integration_profile.todoist_api_key)
     try:
         task = api.add_task(

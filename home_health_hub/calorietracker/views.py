@@ -13,6 +13,13 @@ from .models import CalorieProfile, Food, FoodLog, FoodLogItem, IntegrationProfi
 from .todoist import add_to_todoist, bulk_add_to_todoist
 
 
+def get_second_value(lst, first_value):
+    for tup in lst:
+        if tup[0] == first_value:
+            return tup[1]
+    return None
+
+
 @login_required
 def daily_dash_view(request):
     food_log, created = FoodLog.objects.get_or_create(
@@ -22,13 +29,23 @@ def daily_dash_view(request):
     try:
         calorie_goal = CalorieProfile.objects.get(user=request.user)
     except CalorieProfile.DoesNotExist:
-        return HttpResponseRedirect(reverse("calorietracker:add_calorie_profile"))
+        return HttpResponseRedirect(
+            reverse("calorietracker:calorie_profile_create_view")
+        )
+    # aggregate food log item total by category
+
+    summary = food_log.calorie_total_by_category()
+    summary_dict = {
+        get_second_value(FoodLogItem.choices, item["category"]): item["total"]
+        for item in summary
+    }
 
     total = food_log.calorie_total
     calories_remaining = calorie_goal.daily_calorie_goal - total
     perc = (total / calorie_goal.daily_calorie_goal) * 100
     context = {
         "object": food_log,
+        "summary": summary_dict,
         "total": total,
         "calorie_goal": calorie_goal,
         "rem": calories_remaining,
@@ -326,12 +343,21 @@ def food_log_detail_view(request, id):
     except CalorieProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("calorietracker:add_calorie_profile"))
 
+    # aggregate food log item total by category
+
+    summary = food_log.calorie_total_by_category()
+    summary_dict = {
+        get_second_value(FoodLogItem.choices, item["category"]): item["total"]
+        for item in summary
+    }
+
     total = food_log.calorie_total
     calories_remaining = calorie_goal.daily_calorie_goal - total
     perc = (total / calorie_goal.daily_calorie_goal) * 100
     context = {
         "object": food_log,
         "total": total,
+        "summary": summary_dict,
         "calorie_goal": calorie_goal,
         "rem": calories_remaining,
         "perc": perc,
