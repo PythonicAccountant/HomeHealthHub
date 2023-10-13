@@ -20,6 +20,10 @@ urlpatterns = [
         "tracker/",
         include("home_health_hub.calorietracker.urls", namespace="calorietracker"),
     ),
+    path(
+        "weighttracker/",
+        include("home_health_hub.weighttracker.urls", namespace="weighttracker"),
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
