@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Monthly Dash{% endblock %}
+
+{% block content %}
+  <div class="content">
+    <div class="container-fluid">
+      <div id="weighlog">
+        {% include 'weighttracker/fragments/monthlydash_fragment.html' %}
+            </div>
+          </div>
+      </div>
+{% endblock content %}
