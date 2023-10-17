@@ -36,9 +36,11 @@ class WeightLog(models.Model):
 
     def save(self, *args, **kwargs):
         latest_trend = WeightLog.objects.filter(
-            user=self.user, date__lt=self.date
-        ).first()
+            user=self.user, date__lt=self.date, trend__isnull=False
+        ).last()
         if latest_trend:
+            print(latest_trend)
+            print(self.weight)
             latest_trend = latest_trend.trend
             self.trend = (self.weight - latest_trend) * decimal.Decimal(
                 0.3636

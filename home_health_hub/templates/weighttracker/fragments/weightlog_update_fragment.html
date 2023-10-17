@@ -1,0 +1,26 @@
+{% load widget_tweaks %}
+
+<tr hx-trigger='cancel' class='editing' hx-get="/contact/0">
+  {% csrf_token %}
+
+  {% for hidden in form.hidden_fields %}
+    {{ hidden }}
+  {% endfor %}
+  {% for field in form.visible_fields %}
+    <td>
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field|add_class:'form-control' }}
+      {% for error in field.errors %}
+        <span class="help-block">{{ error }}</span>
+      {% endfor %}
+    </td>
+  {% endfor %}
+      <td>
+        <button class="btn btn-danger" hx-get="{% url 'weighttracker:weightlog-get' weightlog.id %}">
+          Cancel
+        </button>
+        <button class="btn btn-danger" hx-post="{% url 'weighttracker:weightlog-update' weightlog.id %}" hx-include="closest tr">
+          Save
+        </button>
+      </td>
+    </tr>

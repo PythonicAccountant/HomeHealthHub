@@ -18,10 +18,11 @@
         <th>Weight</th>
         <th>Trend</th>
         <th>Var</th>
+        <th></th>
       </tr>
 
     </thead>
-    <tbody>
+    <tbody hx-target="closest tr" hx-swap="outerHTML">
       {% for day in days %}
       <tr>
         <td>{{day.date|date:"D" }} -
@@ -29,6 +30,14 @@
         <td>{{ day.weight|default_if_none:0 }}</td>
         <td>{{ day.trend|default_if_none:0 }}</td>
         <td>{{ day.var|default_if_none:0 }}</td>
+      <td>
+        <button class="btn btn-danger"
+                hx-get={% url 'weighttracker:weightlog-update' day.id %}
+                hx-trigger="click"
+                >
+          Edit
+        </button>
+      </td>
       </tr>
       {% endfor %}
     </tbody>
