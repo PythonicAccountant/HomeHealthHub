@@ -8,19 +8,27 @@
   {% endfor %}
   {% for field in form.visible_fields %}
     <td>
-      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+    <div class="input-group input-group-sm mb-3">
+
+{#      <label for="{{ field.id_for_label }}">{{ field.label }}</label>#}
       {{ field|add_class:'form-control' }}
       {% for error in field.errors %}
         <span class="help-block">{{ error }}</span>
       {% endfor %}
+    </div>
     </td>
   {% endfor %}
+<td>   </td>
       <td>
-        <button class="btn btn-danger" hx-get="{% url 'weighttracker:weightlog-get' weightlog.id %}">
-          Cancel
+        <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
+        <button class="btn btn-danger btn-sm" hx-get="{% url 'weighttracker:weightlog-get' weightlog.id %}">
+{#          Cancel#}
+          <i class="fa fa-close"></i>
         </button>
-        <button class="btn btn-primary" hx-post="{% url 'weighttracker:weightlog-update' weightlog.id %}" hx-include="closest tr">
-          Save
+        <button class="btn btn-primary btn-sm" hx-post="{% url 'weighttracker:weightlog-update' weightlog.id %}" hx-include="closest tr">
+{#          Save#}
+          <i class="fa fa-save"></i>
         </button>
+        </div>
       </td>
     </tr>
