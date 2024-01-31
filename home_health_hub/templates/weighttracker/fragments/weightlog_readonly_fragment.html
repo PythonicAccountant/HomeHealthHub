@@ -1,0 +1,15 @@
+<tr>
+    <td>{{weightlog.date|date:"D" }} -
+      {{ weightlog.date|date:"jS" }}</td>
+    <td>{{ weightlog.weight|default_if_none:0 }}</td>
+    <td>{{ weightlog.trend|default_if_none:0 }}</td>
+    <td>{{ weightlog.var|default_if_none:0 }}</td>
+      <td>
+        <button class="btn btn-sm"
+                hx-get="{% url 'weighttracker:weightlog-update' weightlog.id %}"
+                hx-trigger="click"
+                >
+          <i class="fa fa-pencil"></i>
+        </button>
+      </td>
+    </tr>
