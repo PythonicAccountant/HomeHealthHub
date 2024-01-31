@@ -29,6 +29,11 @@
       {% else %}
       <a class="btn btn-primary" href="{% url 'calorietracker:calorie_profile_create_view'%}" role="button">Add Calorie Goal</a>
     {% endif %}
+    {% if object.weightprofile.id %}
+      <a class="btn btn-primary" href="{% url 'weighttracker:weight-profile-update-view' object.weightprofile.id %}" role="button">Update Weight Info</a>
+    {% else %}
+      <a class="btn btn-primary" href="{% url 'weighttracker:weight-profile-create-view'%}" role="button">Add Weight Info</a>
+    {% endif %}
   </div>
 
 </div>

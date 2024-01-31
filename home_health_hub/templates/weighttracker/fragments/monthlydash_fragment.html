@@ -1,5 +1,9 @@
 {% load custom_filterswt %}
 <div class="row justify-content-center">
+
+<div class="container-fluid" id="chartthing" hx-get="getchart/2024/1" hx-trigger="weightUpdate from:body">
+  {% include 'weighttracker/fragments/chart_fragment.html' %}
+</div>
   <div class="col-auto">
 <div class="container-fluid">
   <div class="row" style="justify-content: center">
@@ -11,6 +15,11 @@
 
   </div>
     </div>
+  <div class="card">
+    Weekly loss: {{ weekly_loss|floatformat:1 }}<br>
+    Estimated Daily deficit: {{ daily_deficit|floatformat:0 }} kcal<br>
+    Estimated daily calories: {{ est_calories|floatformat:0 }} kcal<br>
+  </div>
   <table class="table table-striped">
     <thead>
       <tr>
@@ -31,11 +40,11 @@
         <td>{{ day.trend|default_if_none:0 }}</td>
         <td>{{ day.var|default_if_none:0 }}</td>
       <td>
-        <button class="btn btn-danger"
-                hx-get={% url 'weighttracker:weightlog-update' day.id %}
+        <button class="btn btn-sm"
+                hx-get="{% url 'weighttracker:weightlog-update' day.id %}"
                 hx-trigger="click"
                 >
-          Edit
+          <i class="fa fa-pencil"></i>
         </button>
       </td>
       </tr>

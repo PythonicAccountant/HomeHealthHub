@@ -33,13 +33,24 @@
         <div class="col-md-3 col-sm-6">
           <div class="card text-center">
             <h2 class="card-title">
+              Weight Log
+            </h2>
+            <div style="display: flex; flex-direction: column">
+              <a class="hyperlink" href="{% url 'weighttracker:monthdash' %}">Monthly Weight Log</a>
+            </div>
+          </div>
+      </div>
+
+        <div class="col-md-3 col-sm-6">
+          <div class="card text-center">
+            <h2 class="card-title">
               Reports
             </h2>
             <div style="display: flex; flex-direction: column">
               <a class="hyperlink" href="{% url 'calorietracker:Food-filter' %}">Food Log Reporting</a>
             </div>
           </div>
-      </div>
+        </div>
       </div>
     </div>
 

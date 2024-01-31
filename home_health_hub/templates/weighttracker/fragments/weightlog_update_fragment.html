@@ -19,7 +19,7 @@
         <button class="btn btn-danger" hx-get="{% url 'weighttracker:weightlog-get' weightlog.id %}">
           Cancel
         </button>
-        <button class="btn btn-danger" hx-post="{% url 'weighttracker:weightlog-update' weightlog.id %}" hx-include="closest tr">
+        <button class="btn btn-primary" hx-post="{% url 'weighttracker:weightlog-update' weightlog.id %}" hx-include="closest tr">
           Save
         </button>
       </td>

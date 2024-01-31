@@ -1,0 +1,73 @@
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <div class="container-fluid h-400">
+              <canvas id="myChart-1"></canvas>
+            </div>
+ {{ weight_data|json_script:"weight_data" }}
+ {{ trend_data|json_script:"trend_data" }}
+ {{ labels|json_script:"labels" }}
+  <script>
+    function chartStuff() {
+      let Labels = JSON.parse(document.getElementById('labels').textContent);
+      let TrendData = JSON.parse(document.getElementById('trend_data').textContent);
+      let WeightData = JSON.parse(document.getElementById('weight_data').textContent);
+      let TrendNumber = WeightData.map(Number)
+      let minv = Math.min.apply(Math, TrendNumber.filter(Number)) - 1;
+      let maxv = Math.max.apply(Math, TrendNumber.filter(Number)) + 1;
+      console.log(maxv)
+
+
+      const s_data = {
+        labels: Labels,
+        datasets: [
+          {
+            label: 'Trend',
+            backgroundColor: 'rgb(255,99,132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: TrendData,
+          },
+          {
+            label: 'Weight',
+            backgroundColor: 'rgb(54, 162, 235)',
+            borderColor: 'rgb(54, 162, 235)',
+            showLine: false,
+            data: WeightData,
+          }
+        ]
+      };
+
+
+      const config = {
+        type: 'line',
+        data: s_data,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: [{
+              type: 'time',
+              distribution: 'series',
+              time: {
+                unit: 'day',
+                parser: 'YYYY-MM-DD',
+                displayFormats: {
+                  day: 'MM/DD/YYYY'
+                }
+
+              }
+            }],
+            y: {
+              min: minv,
+              max: maxv,
+            }
+          }
+        }
+
+      };
+      let myChart1 = new Chart(
+        document.getElementById('myChart-1'),
+        config
+      );
+    }
+    chartStuff()
+
+  </script>

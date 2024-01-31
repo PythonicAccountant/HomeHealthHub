@@ -5,11 +5,11 @@
     <td>{{ weightlog.trend|default_if_none:0 }}</td>
     <td>{{ weightlog.var|default_if_none:0 }}</td>
       <td>
-        <button class="btn btn-danger"
-                hx-get={% url 'weighttracker:weightlog-update' weightlog.id %}
+        <button class="btn btn-sm"
+                hx-get="{% url 'weighttracker:weightlog-update' weightlog.id %}"
                 hx-trigger="click"
                 >
-          Edit
+          <i class="fa fa-pencil"></i>
         </button>
       </td>
     </tr>

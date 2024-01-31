@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 
-from .models import WeightLog
+from .models import WeightLog, WeightProfile
 
 
 class WeightLogForm(ModelForm):
@@ -16,3 +16,9 @@ class WeightLogForm(ModelForm):
             "weight",
             "trend",
         ]
+
+
+class WeightProfileForm(ModelForm):
+    class Meta:
+        model = WeightProfile
+        exclude = ("user",)

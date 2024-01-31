@@ -2,19 +2,43 @@ from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
 
-from .forms import WeightLogForm
-from .models import WeightLog
+from .forms import WeightLogForm, WeightProfileForm
+from .models import WeightLog, WeightProfile
 
 
 @login_required
 def month_dash(request, year=datetime.today().year, month=datetime.today().month):
+    weekly_loss = WeightLog.objects.weekly_loss2(request.user)
+    estimated_daily_deficit = (weekly_loss * 3500) / 7
+    try:
+        wp = WeightProfile.objects.get(user=request.user)
+    except WeightProfile.DoesNotExist:
+        return HttpResponseRedirect(reverse("weighttracker:weight-profile-create-view"))
+    est_calories = wp.estimated_tdee + estimated_daily_deficit
+    days = WeightLog.objects.get_or_create_days(request.user, year, month)
+    labels = []
+    trend_data = []
+    weight_data = []
+    for day in days:
+        # if day.trend:
+        labels.append(day.date.strftime("%b %d, %Y"))
+        trend_data.append(day.trend)
+        weight_data.append(day.weight)
+
     context = {
-        "days": WeightLog.get_or_create_days(request.user, year, month),
+        "days": days,
+        "weekly_loss": weekly_loss,
+        "est_calories": est_calories,
+        "daily_deficit": estimated_daily_deficit,
         "month": month,
         "year": year,
+        "labels": labels,
+        "trend_data": trend_data,
+        "weight_data": weight_data,
     }
 
     if not request.META.get("HTTP_HX_REQUEST"):
@@ -55,7 +79,84 @@ def weightlog_get_row(request, id):
     # get request return read only row fragment
     weightlog = WeightLog.objects.get(id=id)
     return TemplateResponse(
+        request=request,
+        template="weighttracker/fragments/weightlog_readonly_fragment.html",
+        context={"weightlog": weightlog},
+        headers={"HX-Trigger": "weightUpdate"},
+    )
+
+
+@login_required
+def get_chart(request, year=datetime.today().year, month=datetime.today().month):
+    days = WeightLog.objects.get_or_create_days(request.user, year, month)
+    labels = []
+    trend_data = []
+    weight_data = []
+    for day in days:
+        # if day.trend:
+        labels.append(day.date.strftime("%b %d, %Y"))
+        trend_data.append(day.trend)
+        weight_data.append(day.weight)
+
+    context = {
+        "days": days,
+        "month": month,
+        "year": year,
+        "labels": labels,
+        "trend_data": trend_data,
+        "weight_data": weight_data,
+    }
+
+    if not request.META.get("HTTP_HX_REQUEST"):
+        return TemplateResponse(
+            request, "weighttracker/fragments/chart_fragment.html", context
+        )
+    return TemplateResponse(
+        request, "weighttracker/fragments/chart_fragment.html", context
+    )
+
+
+@login_required
+def weight_profile_create_view(request):
+    # if this is a POST request we need to process the form data
+    if request.method == "POST":
+        # create a form instance and populate it with data from the request:
+        form = WeightProfileForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            entry = form.save(commit=False)
+            entry.user = request.user
+            entry.save()
+            return HttpResponseRedirect(reverse("weighttracker:monthdash"))
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = WeightProfileForm()
+
+    if not request.META.get("HTTP_HX_REQUEST"):
+        return TemplateResponse(
+            request, "weighttracker/weight_profile_form.html", {"form": form}
+        )
+    else:
+        return TemplateResponse(
+            request,
+            "weighttracker/fragments/weight_profile_form_fragment.html",
+            {"form": form},
+        )
+
+
+@login_required
+def weight_profile_update_view(request, id):
+    weight_profile = get_object_or_404(WeightProfile, id=id)
+    if request.method == "POST":
+        form = WeightProfileForm(request.POST, instance=weight_profile)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse("home"))
+    else:
+        form = WeightProfileForm(instance=weight_profile)
+    return TemplateResponse(
         request,
-        "weighttracker/fragments/weightlog_readonly_fragment.html",
-        {"weightlog": weightlog},
+        "weighttracker/weight_profile_update.html",
+        {"form": form},
     )

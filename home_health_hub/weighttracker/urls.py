@@ -13,4 +13,15 @@ urlpatterns = [
         name="weightlog-update",
     ),
     path("weightlog/<int:id>", view=views.weightlog_get_row, name="weightlog-get"),
+    path("getchart/<int:year>/<int:month>", view=views.get_chart, name="getchart"),
+    path(
+        "profile/create",
+        view=views.weight_profile_create_view,
+        name="weight-profile-create-view",
+    ),
+    path(
+        "profile/update/<int:id>",
+        view=views.weight_profile_update_view,
+        name="weight-profile-update-view",
+    ),
 ]
