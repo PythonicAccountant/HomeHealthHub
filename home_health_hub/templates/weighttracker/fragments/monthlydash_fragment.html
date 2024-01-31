@@ -23,7 +23,7 @@
   <table class="table table-striped">
     <thead>
       <tr>
-        <th>Date</th>
+        <th nowrap="nowrap">Date</th>
         <th>Weight</th>
         <th>Trend</th>
         <th>Var</th>
@@ -34,8 +34,8 @@
     <tbody hx-target="closest tr" hx-swap="outerHTML">
       {% for day in days %}
       <tr>
-        <td>{{day.date|date:"D" }} -
-        {{ day.date|date:"jS" }}</td>
+        <td><nobr>{{day.date|date:"D" }} -
+          {{ day.date|date:"jS" }}</nobr></td>
         <td>{{ day.weight|default_if_none:0 }}</td>
         <td>{{ day.trend|default_if_none:0 }}</td>
         <td>{{ day.var|default_if_none:0 }}</td>
