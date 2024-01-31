@@ -12,8 +12,12 @@ from .models import WeightLog, WeightProfile
 
 @login_required
 def month_dash(request, year=datetime.today().year, month=datetime.today().month):
-    weekly_loss = WeightLog.objects.weekly_loss2(request.user)
-    estimated_daily_deficit = (weekly_loss * 3500) / 7
+    try:
+        weekly_loss = WeightLog.objects.weekly_loss2(request.user)
+        estimated_daily_deficit = (weekly_loss * 3500) / 7
+    except WeightLog.DoesNotExist:
+        weekly_loss = 0
+        estimated_daily_deficit = 0
     try:
         wp = WeightProfile.objects.get(user=request.user)
     except WeightProfile.DoesNotExist:
