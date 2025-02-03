@@ -10,8 +10,16 @@ from .forms import WeightLogForm, WeightProfileForm
 from .models import WeightLog, WeightProfile
 
 
+def get_current_year():
+    return datetime.today().year
+
+
+def get_current_month():
+    return datetime.today().month
+
+
 @login_required
-def month_dash(request, year=datetime.today().year, month=datetime.today().month):
+def month_dash(request, year=get_current_year(), month=get_current_month()):
     try:
         weekly_loss = WeightLog.objects.weekly_loss2(request.user)
         estimated_daily_deficit = (weekly_loss * 3500) / 7
@@ -91,7 +99,7 @@ def weightlog_get_row(request, id):
 
 
 @login_required
-def get_chart(request, year=datetime.today().year, month=datetime.today().month):
+def get_chart(request, year=get_current_year(), month=get_current_month()):
     days = WeightLog.objects.get_or_create_days(request.user, year, month)
     labels = []
     trend_data = []
