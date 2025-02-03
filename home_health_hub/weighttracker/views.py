@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
 
-from .forms import WeightLogForm, WeightProfileForm
+from .forms import WeightLogForm, WeightLogNonTableForm, WeightProfileForm
 from .models import WeightLog, WeightProfile
 
 
@@ -172,3 +172,33 @@ def weight_profile_update_view(request, id):
         "weighttracker/weight_profile_update.html",
         {"form": form},
     )
+
+
+@login_required
+def weight_log_non_table_update_view(request):
+    # if this is a POST request we need to process the form data
+    weightlog = WeightLog.objects.get(user=request.user, date=datetime.today())
+    if request.method == "POST":
+        # create a form instance and populate it with data from the request:
+        form = WeightLogNonTableForm(request.POST, instance=weightlog)
+        # check whether it's valid:
+        if form.is_valid():
+            entry = form.save(commit=False)
+            entry.weight = form.cleaned_data["weight"]
+            entry.save()
+            return HttpResponseRedirect(reverse("weighttracker:monthdash"))
+
+    # if put request then update, validate form save, redirect to weightlog_getrow
+    else:
+        form = WeightLogNonTableForm(instance=weightlog)
+
+    if not request.META.get("HTTP_HX_REQUEST"):
+        return TemplateResponse(
+            request, "weighttracker/weightlog_form.html", {"form": form}
+        )
+    else:
+        return TemplateResponse(
+            request,
+            "weighttracker/fragments/weightlog_form_fragment.html",
+            {"form": form},
+        )

@@ -18,6 +18,19 @@ class WeightLogForm(ModelForm):
         ]
 
 
+class WeightLogNonTableForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(WeightLogNonTableForm, self).__init__(*args, **kwargs)
+        self.fields["date"].disabled = True
+
+    class Meta:
+        model = WeightLog
+        fields = [
+            "date",
+            "weight",
+        ]
+
+
 class WeightProfileForm(ModelForm):
     class Meta:
         model = WeightProfile

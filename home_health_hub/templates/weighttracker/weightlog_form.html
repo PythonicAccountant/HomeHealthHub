@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Weight Log: Today{% endblock %}
+
+{% block content %}
+  <div class="content">
+    <div class="container-fluid">
+
+      {% include 'weighttracker/fragments/weightlog_form_fragment.html' %}
+
+    </div>
+  </div>
+
+{% endblock content %}
