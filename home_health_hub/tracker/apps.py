@@ -6,4 +6,4 @@ class TrackerConfig(AppConfig):
     name = "home_health_hub.tracker"
 
     def ready(self):
-        import tracker.signal  # noqa
+        import home_health_hub.tracker.signals  # noqa
