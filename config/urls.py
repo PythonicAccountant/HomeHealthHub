@@ -24,8 +24,11 @@ urlpatterns = [
         "weighttracker/",
         include("home_health_hub.weighttracker.urls", namespace="weighttracker"),
     ),
+    path(
+        "531/",
+        include("home_health_hub.tracker.urls", namespace="tracker"),
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit

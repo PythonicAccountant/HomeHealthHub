@@ -1,0 +1,20 @@
+{% extends "tracker/base.html" %}
+
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+      <h2 class="content-title">Update Accessory Lift</h2>
+      <div class="card">
+        <form method="post">
+          {% csrf_token %}
+        <div class="form-group">
+          <table class="table">
+            {{ form.as_table }}
+            </table>
+        </div>
+          <input class="btn btn-primary btn-block" type="submit" value="Submit">
+        </form>
+      </div>
+    </div>
+</div>
+{% endblock content %}

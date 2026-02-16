@@ -1,0 +1,86 @@
+{% extends "tracker/base.html" %}
+
+{% block content %}
+
+    <div class="content">
+        {% for week in '1234' %}
+            <h2 class="content-title">Week {{ week }}</h2>
+            <div class="container-fluid">
+                <div class="row row-eq-spacing">
+
+                    {% for workout in workout_list %}
+                        {% if  workout.week == week|add:"0" %}
+                            <div class="modal" id="modal-{{ workout.id }}" tabindex="-1" role="dialog">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <a href="#" class="btn close" role="button" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </a>
+                                        <h5 class="modal-title">Update workout</h5>
+                                        <form action="{% url 'tracker:workout_update' pk=workout.pk %}"
+                                              method="post">{% csrf_token %}
+                                            <div class="form-group">
+                                                <table class="table">
+                                                    {{ form.as_table }}
+                                                </table>
+                                            </div>
+                                            <input class="btn btn-primary btn-block" type="submit" value="Submit">
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-sm-12 col-xl-3">
+                                <div class="card my-10">
+                                    <h6> {{ workout.get_lift_display }}
+                                        {% if workout.date_completed is null %}
+                                            <span class="badge badge-danger float-right">Incomplete</span>
+                                        {% else %}
+                                            <span class="badge badge-success float-right">Completed {{ workout.date_completed }}</span>
+                                        {% endif %}
+                                    </h6>
+
+                                    <a href="#modal-{{ workout.id }}" class="btn  btn-sm" role="button">Complete</a>
+                                    <a href="{% url 'tracker:add_accessory' workout.id %}" class="btn  btn-sm" role="button">Add
+                                        Accessory</a>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Set</th>
+                                            <th>Reps</th>
+                                            <th>Weight</th>
+                                        </tr>
+                                        </thead>
+
+                                        {% for sets in workout.sets.all %}
+                                            <tr>
+                                                <td>{{ sets.set_number }}</td>
+                                                <td>{{ sets.reps|default_if_none:"" }}</td>
+                                                <td>
+                                                    <button class="btn" data-toggle="tooltip"
+                                                            data-title="{{ sets.plates_viz }}"
+                                                            type="button"> {{ sets.weight }} </button>
+                                                </td>
+
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                    {% if workout.estimated_1rm %}
+                                        <div class="text-center">
+                                            <span class="badge badge-secondary badge-pill"> Estimated 1RM: {{ workout.estimated_1rm }} </span>
+                                        </div>
+                                    {% else %}
+                                        <span>&nbsp;</span>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}

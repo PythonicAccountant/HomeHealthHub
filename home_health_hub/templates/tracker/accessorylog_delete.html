@@ -1,0 +1,17 @@
+{% extends "tracker/base.html" %}
+
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+      <h2 class="content-title">Delete</h2>
+      <div class="card">
+        <form method="POST">
+          {% csrf_token %}
+          <h2>Are you sure you want to delete the log {{ object.accessory_lift }}</h2>
+          <input class="btn btn-danger" type="submit" value="Yes, Delete">
+          <a class="btn btn-secondary" href="{% url 'tracker:accessory_tracker' %}">Cancel</a>
+        </form>
+      </div>
+    </div>
+</div>
+{% endblock content %}
