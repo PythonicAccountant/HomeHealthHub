@@ -1,0 +1,61 @@
+{% extends "tracker/base.html" %}
+
+{% block content %}
+  <div class="content">
+    <div class="container-fluid">
+
+      <div class="modal" id="modal-2" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <a href="#" class="btn close" role="button" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </a>
+            <h5 class="modal-title">End Current and Start Next</h5>
+            <form action="{% url 'tracker:accessory_list' %}" method="post">{% csrf_token %}
+              <div class="form-group">
+                <table class="table">
+                  {{ form.as_table }}
+                </table>
+              </div>
+              <input class="btn btn-primary btn-block" type="submit" value="Submit">
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+      <h2 class="content-title">Accessory lift list</h2>
+      <div class="card">
+          <div class="table-responsive">
+        <a href="#modal-2" class="btn btn-success btn-sm float-right">Add Lift</a>
+        <table class="table table-bordered table-hover">
+          <thead>
+          <tr>
+            <th>Accessory Lift</th>
+            <th>Body Part Group</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+
+          {% for lift in object_list %}
+
+
+            <tr>
+              <td>{{ lift.lift }}</td>
+              <td>{{ lift.body_part_group }}</td>
+              <td><a href="{% url 'tracker:accessory_delete' lift.id %}" class="btn btn-danger btn-sm">Delete</a>
+              <a href="{% url 'tracker:accessory_update' lift.id %}" class="btn btn-sm">Edit</a>
+
+            </tr>
+
+
+
+          {% endfor %}
+        </table>
+</div>
+      </div>
+
+
+    </div>
+  </div>
+{% endblock content %}

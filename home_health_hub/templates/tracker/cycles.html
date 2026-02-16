@@ -1,0 +1,73 @@
+{% extends "tracker/base.html" %}
+
+{% block content %}
+  <div class="content">
+    <div class="container-fluid">
+
+      <div class="modal" id="modal-2" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <a href="#" class="btn close" role="button" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </a>
+            <h5 class="modal-title">End Current and Start Next</h5>
+            <form action="{% url 'tracker:start_next' %}" method="post">{% csrf_token %}
+              <div class="form-group">
+                <table class="table">
+                  {{ form.as_table }}
+                </table>
+              </div>
+              <input class="btn btn-primary btn-block" type="submit" value="Submit">
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+      <h2 class="content-title">Cycles </h2>
+      <div class="card">
+          <div class="table-responsive">
+        <a href="#modal-2" class="btn btn-success btn-sm float-right">End Current and Start Next</a>
+        <a href="{% url 'tracker:cycle_create' %}" class="btn btn-primary btn-sm float-right">New Cycle</a>
+        <table class="table table-bordered table-hover">
+          <thead>
+          <tr>
+            <th>Cycle Name</th>
+            <th>Cycle Start</th>
+            <th>Cycle End</th>
+            <th>Squat Max</th>
+            <th>Bench Max</th>
+            <th>Deadlift Max</th>
+            <th>OHP Max</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+
+          {% for cycle in cycle_list %}
+
+
+            <tr>
+              <td>{{ cycle.cycle_name}}</td>
+              <td>{{ cycle.cycle_start}}</td>
+              <td>{{ cycle.cycle_end|default_if_none:"" }}</td>
+              <td>{{ cycle.squat_max}}</td>
+              <td>{{ cycle.bench_max}}</td>
+              <td>{{ cycle.deadlift_max}}</td>
+              <td>{{ cycle.ohp_max}}</td>
+              <td><a href="{% url 'tracker:cycle_delete' cycle.id %}" class="btn btn-danger btn-sm">Delete</a>
+              <a href="{% url 'tracker:cycle_update' cycle.id %}" class="btn btn-sm">Edit</a>
+              <a href="{% url 'tracker:view_archive' cycle.id %}" class="btn btn-sm">View Workouts</a></td>
+
+            </tr>
+
+
+
+          {% endfor %}
+        </table>
+</div>
+      </div>
+
+
+    </div>
+  </div>
+{% endblock content %}

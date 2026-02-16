@@ -78,6 +78,7 @@ LOCAL_APPS = [
     "home_health_hub.users",
     "home_health_hub.calorietracker",
     "home_health_hub.weighttracker",
+    "home_health_hub.tracker",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

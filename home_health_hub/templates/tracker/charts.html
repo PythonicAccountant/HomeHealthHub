@@ -1,0 +1,224 @@
+{% extends "tracker/base.html" %}
+
+{% block content %}
+  <div class="content">
+    <div class="row">
+      {% for week in '1234' %}
+        <div class="col-sm-12">
+          <div class="card my-10">
+            <div class="container-fluid h-300">
+              <canvas id="myChart-{{ week }}"></canvas>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  {{ squat_labels|json_script:"squat_labels" }}
+  {{ bench_labels|json_script:"bench_labels" }}
+  {{ deadlift_labels|json_script:"deadlift_labels" }}
+  {{ ohp_labels|json_script:"ohp_labels" }}
+  {{ squat_data|json_script:"squat_data" }}
+  {{ bench_data|json_script:"bench_data" }}
+  {{ deadlift_data|json_script:"deadlift_data" }}
+  {{ ohp_data|json_script:"ohp_data" }}
+  <script>
+      const SquatLabels = JSON.parse(document.getElementById('squat_labels').textContent);
+      const SquatData = JSON.parse(document.getElementById('squat_data').textContent);
+
+
+      const s_data = {
+          labels: SquatLabels,
+          datasets: [
+              {
+              label: 'Squat Estimated 1RM',
+              backgroundColor: 'rgb(255,99,132)',
+              borderColor: 'rgb(255, 99, 132)',
+              data: SquatData,
+          },
+          ]
+      };
+
+
+      const config = {
+          type: 'line',
+          data: s_data,
+          options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                  xAxes: [{
+                      type: 'time',
+                      distribution: 'series',
+                      time: {
+                          unit: 'day',
+                          parser: 'YYYY-MM-DD',
+                          displayFormats:  {
+                              day: 'MM/DD/YYYY'
+                          }
+
+                      }
+                  }]
+              }
+          }
+
+      };
+      let myChart1 = new Chart(
+          document.getElementById('myChart-1'),
+          config
+      );
+
+  </script>
+
+  <script>
+
+      const BenchLabels = JSON.parse(document.getElementById('bench_labels').textContent);
+      const BenchData = JSON.parse(document.getElementById('bench_data').textContent);
+
+
+      const b_data = {
+          labels: BenchLabels,
+          datasets: [
+              {
+                  label: 'Bench Estimated 1RM',
+                  backgroundColor: 'rgb(115,157,255)',
+                  borderColor: 'rgb(115, 157, 255)',
+                  data: BenchData,
+              },
+          ]
+      };
+
+
+      const config1 = {
+          type: 'line',
+          data: b_data,
+          options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                  xAxes: [{
+                      type: 'time',
+                      distribution: 'series',
+                      time: {
+                          unit: 'day',
+                          parser: 'YYYY-MM-DD',
+                          displayFormats:  {
+                              day: 'MM/DD/YYYY'
+                          }
+
+                      }
+                  }]
+              }
+          }
+
+      };
+      let myChart2 = new Chart(
+          document.getElementById('myChart-2'),
+          config1
+      );
+
+
+  </script>
+  <script>
+
+      const DeadliftLabels = JSON.parse(document.getElementById('deadlift_labels').textContent);
+      const DeadliftData = JSON.parse(document.getElementById('deadlift_data').textContent);
+
+
+      const d_data = {
+          labels: DeadliftLabels,
+          datasets: [
+              {
+                  label: 'Deadlift Estimated 1RM',
+                  backgroundColor: 'rgb(39,219,33)',
+                  borderColor: 'rgb(39, 219, 33)',
+                  data: DeadliftData,
+              },
+          ]
+      };
+
+
+      const config2 = {
+          type: 'line',
+          data: d_data,
+          options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                  xAxes: [{
+                      type: 'time',
+                      distribution: 'series',
+                      time: {
+                          unit: 'day',
+                          parser: 'YYYY-MM-DD',
+                          displayFormats:  {
+                              day: 'MM/DD/YYYY'
+                          }
+
+                      }
+                  }]
+              }
+          }
+
+      };
+      let myChart3 = new Chart(
+          document.getElementById('myChart-3'),
+          config2
+      );
+
+
+  </script>
+  <script>
+
+      const OhpLabels = JSON.parse(document.getElementById('ohp_labels').textContent);
+      const OhpData = JSON.parse(document.getElementById('ohp_data').textContent);
+
+
+      const o_data = {
+          labels: OhpLabels,
+          datasets: [
+              {
+                  label: 'OHP Estimated 1RM',
+                  backgroundColor: 'rgb(11,213,206)',
+                  borderColor: 'rgb(11, 213, 206)',
+                  data: OhpData,
+              },
+          ]
+      };
+
+
+      const config3 = {
+          type: 'line',
+          data: o_data,
+          options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                  xAxes: [{
+                      type: 'time',
+                      distribution: 'series',
+                      time: {
+                          unit: 'day',
+                          parser: 'YYYY-MM-DD',
+                          displayFormats:  {
+                              day: 'MM/DD/YYYY'
+                          }
+
+                      }
+                  }]
+              }
+          }
+
+      };
+      let myChart4 = new Chart(
+          document.getElementById('myChart-4'),
+          config3
+      );
+
+
+  </script>
+
+
+{% endblock content %}

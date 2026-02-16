@@ -1,0 +1,22 @@
+{% extends "tracker/base.html" %}
+
+{% block content %}
+  <div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+      <h2 class="content-title">Login</h2>
+      <div class="card">
+        <form method="post">
+          {% csrf_token %}
+          <table class="table">
+            {{ form.as_table }}
+          </table>
+          <input class="btn btn-primary btn-block" type="submit" value="Login">
+        </form>
+      </div>
+      </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
