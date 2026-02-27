@@ -10,7 +10,9 @@ class DateInput(DateInput):
 
 
 class WorkoutForm(ModelForm):
-    date_completed = forms.DateField(widget=DateInput(), initial=timezone.now().date())
+    date_completed = forms.DateField(
+        widget=DateInput(), initial=lambda: timezone.now().date()
+    )
 
     class Meta:
         model = Workout
@@ -19,12 +21,16 @@ class WorkoutForm(ModelForm):
 
 
 class StartNextForm(forms.Form):
-    cycle_end = forms.DateField(widget=DateInput(), initial=timezone.now().date())
+    cycle_end = forms.DateField(
+        widget=DateInput(), initial=lambda: timezone.now().date()
+    )
     new_cycle_name = forms.CharField(max_length=200)
 
 
 class CycleForm(ModelForm):
-    cycle_start = forms.DateField(widget=DateInput(), initial=timezone.now().date())
+    cycle_start = forms.DateField(
+        widget=DateInput(), initial=lambda: timezone.now().date()
+    )
 
     class Meta:
         model = Cycle
